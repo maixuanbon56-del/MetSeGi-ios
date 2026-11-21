@@ -1,26 +1,11 @@
 import SwiftUI
 import AVFoundation
 import UIKit
-@main
-struct MetSeGiApp: App {
-    @Environment(\.scenePhase) private var scenePhase
 
-    init() {
-        Self.activateVoiceAudioSession()
-    }
+final class AudioSessionManager {
+    static let shared = AudioSessionManager()
 
-    var body: some Scene {
-        WindowGroup {
-            ContentView()
-        }
-        .onChange(of: scenePhase) { newPhase in
-            if newPhase == .background || newPhase == .active {
-                Self.activateVoiceAudioSession()
-            }
-        }
-    }
-
-    static func activateVoiceAudioSession() {
+    func activate() {
         let session = AVAudioSession.sharedInstance()
         do {
             try session.setCategory(
@@ -30,7 +15,43 @@ struct MetSeGiApp: App {
             )
             try session.setActive(true)
         } catch {
-            print("AudioSession error: \(error)")
+            print("AudioSession error:", error)
+        }
+    }
+
+    func startObserving() {
+        NotificationCenter.default.addObserver(
+            forName: AVAudioSession.interruptionNotification,
+            object: nil,
+            queue: .main
+        ) { [weak self] note in
+            guard let info = note.userInfo,
+                  let raw = info[AVAudioSessionInterruptionTypeKey] as? UInt,
+                  let type = AVAudioSession.InterruptionType(rawValue: raw),
+                  type == .ended else { return }
+            self?.activate()
+        }
+
+        NotificationCenter.default.addObserver(
+            forName: UIApplication.didBecomeActiveNotification,
+            object: nil,
+            queue: .main
+        ) { [weak self] _ in
+            self?.activate()
+        }
+    }
+}
+
+@main
+struct MetSeGiApp: App {
+    init() {
+        AudioSessionManager.shared.activate()
+        AudioSessionManager.shared.startObserving()
+    }
+
+    var body: some Scene {
+        WindowGroup {
+            ContentView()
         }
     }
 }
