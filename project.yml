@@ -1,0 +1,34 @@
+name: MetSeGi
+options:
+  bundleIdPrefix: com.metsegi
+targets:
+  MetSeGi:
+    type: application
+    platform: iOS
+    deploymentTarget: "15.0"
+    sources:
+      - path: Sources
+    info:
+      path: Info.plist
+      properties:
+        CFBundleDisplayName: Mét sê gi
+        UILaunchScreen: {}
+        UISupportedInterfaceOrientations:
+          - UIInterfaceOrientationPortrait
+        UIBackgroundModes:
+          - audio
+        NSCameraUsageDescription: Cho phép dùng Camera để gọi video và chụp ảnh
+        NSMicrophoneUsageDescription: Cho phép dùng Micro để gọi thoại và gọi video
+        NSPhotoLibraryUsageDescription: Cho phép truy cập thư viện để gửi ảnh và đổi ảnh nền
+        NSAppTransportSecurity:
+          NSAllowsArbitraryLoads: true
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: com.metsegi.app
+        SWIFT_VERSION: "5.0"
+        MARKETING_VERSION: "1.0"
+        CURRENT_PROJECT_VERSION: "1"
+        CODE_SIGNING_ALLOWED: NO
+        CODE_SIGNING_REQUIRED: NO
+        CODE_SIGN_IDENTITY: ""
+        GENERATE_INFOPLIST_FILE: NO
