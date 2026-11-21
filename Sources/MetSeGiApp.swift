@@ -1,6 +1,6 @@
 import SwiftUI
 import AVFoundation
-
+import UIKit
 @main
 struct MetSeGiApp: App {
     @Environment(\.scenePhase) private var scenePhase
